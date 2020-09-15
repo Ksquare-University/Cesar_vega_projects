@@ -1,2 +1,2 @@
-# Cesar_vega_proyects
-Proyects_made_by_cesar_vega
+# Cesar_vega_projects
+Projects_made_by_cesar_vega
