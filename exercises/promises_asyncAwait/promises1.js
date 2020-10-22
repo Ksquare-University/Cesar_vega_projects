@@ -22,15 +22,14 @@ function getMessageThirdPart() {
 }
 
 
-function getCompleteMessage() {
-  
-  
-  return Promise.all( [getMessageFirstPart(), getMessageSecondPart(),getMessageThirdPart()] ).then(values =>{
-    return values.join(" ");
-  });
+async function getCompleteMessage() {
+    const beginning = getMessageFirstPart();
+    const middle = getMessageSecondPart();
+    const end = getMessageThirdPart();
 
+    const message_parts = await Promise.all([beginning,middle,end]);
+    console.log(message_parts.join(" "));
 }
-
 
 module.exports = {
   getCompleteMessage,

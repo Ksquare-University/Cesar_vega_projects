@@ -29,93 +29,97 @@
 
 function wait(delay) {
   //sets a wait time. of course, only if we do it synchronously. (Await)
-  //setTimeout(function(){},delay);
-
-  //El setTimeout no es una promise en si
-  //LO DE DANIEL:
-  return new Promise((resolve) => setTimeout(() => resolve(), delay));
+  setTimeout(function(){},delay);
 }
 
 function clean(number) {
   //Basically makes this number a promise.
-  //return new Promise((resolve) => setTimeout(() => resolve(number), 0));
-  //return new Promise((resolve) => resolve(number));
-  
-
-  /*
-  If we did this, we would be getting Promise { <pending>} Because value is what the wait returns.
-
-  return wait(1000).then((value) => value
-  );
-  */
-
-  //LO DE DANIEL:
-  return wait(1000).then(() => number);
-
-  //En lo de daniel, estamos esperando al wait y regresamos el numero.
-
-
+  return new Promise((resolve) => setTimeout(() => resolve(number), 0));
 }
 
-function add(x, y) {
+async function add(x, y) {
   //Makes the two passed numbers async and waits for the operation to resolve.
-  //return new Promise((resolve) => resolve(clean(x) + clean(y)));
-
-  //LO DE DANIEL
-  return Promise.all([clean(x), clean(y)]).then(([x,y]) => x + y);
-
-  //Ahora 
+  const x_ = clean(x);
+  const y_ = clean(y);
+  const array = await Promise.all([x_,y_]);
+  let sum = array.reduce(function(accumulator, currentValue, currentIndex, array) {
+    return accumulator + currentValue;
+  })
   
+  //console.log(sum);
+  return sum;
 }
 
-/*
+/**
  * Exercise 1
-*/
+ */
 
 function getSum20() {
-  //return new Promise((resolve) => resolve(10 + 10)); // <- Funciona pero no es el punto
-  
-  //LO DE DANIEL:
   return add(10,10);
-
 }
 
-//EJEMPLO DE DANIEL:
-//getSum20().then(console.log);
+getSum20();
 
 /**
  * Exercise 2
  */
 
-function multipy(x, y) {
-  //Makes the two passed numbers async and waits for the operation to resolve.
-  //return new Promise((resolve) => resolve(clean(x) + clean(y)));
+ /*
+async function getOperation100() {
+  let sum = 0;
+  let while_count = 0;
+  while(sum != 100){
+    while_count += 1;
+    if(100 - sum > 10){
+      sum = await add(sum,10);
+    } else{
+      sum = await add(sum,100-sum);
+    }
 
-  //LO DE DANIEL
-  return Promise.all([clean(x), clean(y)]).then(([x,y]) => x * y);
+    if(sum > 100){
+      sum = await add(sum, 100-sum);
+      break;
+    }
+  }
+  //console.log(sum);
+  return sum;
+}
+*/
 
-  //Ahora 
-  
+//Is this legit? Why does the previous one break the tester?
+async function getOperation100() {
+  let sum = 0;
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  sum = await add(sum,10);
+  return sum;
 }
 
-function getOperation100() {
-  multipy(10,10)
-}
 
+//getOperation100();
 
 /**
  * Exercise 3
  */
 
- //Hacer una funcion factory que genere funciones
-
-function add5(num) {
+async function add5(num) {
+  const sum5 = await add(num,5);
+  //console.log(sum5);
+  return sum5;
 
 }
 
 
-function getSum25() {
-
+async function getSum25() {
+  const sum25 = await add(20,5); //Can we do this, or we need to do it with numbers less than 10?
+  return sum25;
 }
 
 module.exports = {
