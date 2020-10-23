@@ -1,88 +1,3 @@
-const getRequestRoute = (service, params = {}) => {
-  const serviceRoute = routes[service];
-
-  if (Object.entries(params).length === 0) {
-    return serviceRoute;
-  }
-
-  return Object.keys(params).reduce((acc, param) => acc.replace(acc, params[param]), serviceRoute);
-};
-
-module.exports = {
-  getRequestRoute,
-};
-
-const DELAY = 1000;
-
-const HTTPGateway = (function () {
-  let mockOrder = {};
-
-  const get = (service, params) =>
-    new Promise((resolve) =>
-      setTimeout(
-        () =>
-          resolve({ url: getRequestRoute(service, params), status: 200, data: { ...mockOrder } }),
-        DELAY,
-      ),
-    );
-
-  const post = (service, config) => {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        mockOrder = {
-          id: cryptoRandomString({ length: 5, type: "base64" }),
-          ...config,
-        };
-        return resolve({ url: getRequestRoute(service), status: 201, data: { ...mockOrder } });
-      }, DELAY),
-    );
-  };
-
-  return {
-    get,
-    post,
-  };
-})();
-
-module.exports = {
-  HTTPGateway,
-};
-
-
-const API_URL = "https://api.test.com";
-const routes = {
-  newOrder: "/order",
-  getOrder: "/order/:id",
-};
-
-
-const ordersService = (function (api) {
-  const createOrder = (config) => api.post("newOrder", config);
-  const getOrderInfo = (orderId) => {
-    return api.get("getOrder", { ":id": orderId }).then(({ data }) => {
-      // In the practice this is not necessary
-      // The API should returns an error and we are going to cacht it
-      // in the catch()
-      const { id } = data;
-      if (id !== orderId) {
-        return Promise.reject({ message: "order not found", status: "404" });
-      }
-
-      return { foods: data.foods };
-    });
-  };
-
-  return {
-    createOrder,
-    getOrderInfo,
-  };
-})(HTTPGateway);
-
-module.exports = {
-  ordersService,
-};
-
-
 /**
  * The final exercise! This is easy one.
  *
@@ -104,16 +19,33 @@ module.exports = {
  *
  */
 
-//const { ordersService } = require("../mocks/services/orders");
+const { ordersService } = require("../mocks/services/orders");
 
-console.log(ordersService);
+function wait(delay) {
+  return new Promise((resolve) => setTimeout(() => resolve(), delay));
+}
 
-async function wating() {
+function wating() {
+
+  //I'll try to do it so that it only runs after the previous one is over.
+  //IT WOOOORKKSSSS
+  wait(1000).then( () =>{
+    console.log("Waited 1");
+    wait(1000).then(
+      () => {
+        console.log("Waited 2");
+      }
+    )
+  }
+  )
+  
 
 }
 
 function newOrderFoodProcess() {
-  // TODO: Implement
+  createOrder();
+  wating();
+  getOrderInfo();
 }
 
 module.exports = {

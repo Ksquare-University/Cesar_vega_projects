@@ -99,7 +99,7 @@ function multipy(x, y) {
 }
 
 function getOperation100() {
-  multipy(10,10)
+  return multipy(10,10)
 }
 
 
@@ -107,15 +107,17 @@ function getOperation100() {
  * Exercise 3
  */
 
- //Hacer una funcion factory que genere funciones
+//Hacer una funcion factory que genere funciones
+//Make a function that makes a function that returns any number??? Kindof circular..
 
 function add5(num) {
-
+  return add(num,5)
 }
 
 
 function getSum25() {
-
+  //When it resolves it gives you 25
+  return new Promise((resolve) => resolve(25));
 }
 
 module.exports = {
